@@ -1,6 +1,6 @@
 #include <Stepper.h>
 
-const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
+const int stepsPerRevolution = 512;  // change this to fit the number of steps per revolution
 // for your motor
 
 Stepper stepper_x(stepsPerRevolution, 2,3,4,5);
@@ -23,9 +23,7 @@ void setup()
   Serial.begin(115200);
 
   // set the speed at 60 rpm:
-  stepper_x.setSpeed(80);
-  stepper_y.setSpeed(80);
-  stepper_z.setSpeed(80);
+ 
 
   
   // put your setup code here, to run once:
