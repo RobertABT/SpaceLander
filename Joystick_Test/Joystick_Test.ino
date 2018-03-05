@@ -53,7 +53,7 @@ void loop() {
   delay(1000);
     
 }
-
+//read does some averaging
 void joyRead(){
   int joyX=0;
   int joyY=0;
