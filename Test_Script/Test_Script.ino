@@ -6,12 +6,13 @@ const int stepsPerRevolution = 512;  // change this to fit the number of steps p
 //drum radius =14mm (given)
 //drum circumference = 18.9mm=radius of 9.45mm (measured)
 //Circumference=2*pi*r=59.37mm
+//mm per step = 59.37mm/512=0.1159mm/step
+//1metre/7680 steps = 0.1302mm/step
 
 Stepper stepper_x(stepsPerRevolution, 2,3,4,5);
 Stepper stepper_y(stepsPerRevolution, 8,9,10,11);
 Stepper stepper_z(stepsPerRevolution, 6,7,12,13);
 
-int stepCount = 0;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -19,70 +20,81 @@ void setup() {
   stepper_y.setSpeed(40);
   stepper_z.setSpeed(40);
 }
-int turnx = 0;
-int turny = 0;
-int turnz = 0;
+int stepsx = 0;
+int stepsy = 0;
+int stepsz = 0;
 void loop() {
   // put your main code here, to run repeatedly:
-  /*stepper_z.step(20);
-  Serial.print("steps:");
-  Serial.println(stepCount);
-  stepCount+=5;
-  delay(1000);
-  */
   if (Serial.available() > 0) {
     int input = Serial.read();
     switch(input){
       case 'x':
-        turnx+=1;
+        if(stepsx==7680){
+          Serial.println("max x");
+          break;
+        }
         Serial.println("clockwise");
         stepper_x.step(stepsPerRevolution);
-        delay(1000);
-        Serial.println(turnx);
+        delay(100);
+        stepsx+=stepsPerRevolution;
+        Serial.println(stepsx);
         break;
       case 'y':
-        turny+=1;
+        if(stepsy==7680){
+          Serial.println("max y");
+          break;
+        }
         Serial.println("clockwise");
         stepper_y.step(stepsPerRevolution);
-        delay(1000);
-        Serial.println(turny);
+        delay(100);
+        stepsy+=stepsPerRevolution;
+        Serial.println(stepsy);
         break;
       case 'z':
-        turnz+=1;
+        if(stepsz==7680){
+          Serial.println("max z");
+          break;
+        }
         Serial.println("clockwise");
         stepper_z.step(stepsPerRevolution);
-        delay(1000);
-        Serial.println(turnz);
+        delay(100);
+        stepsz+=stepsPerRevolution;
+        Serial.println(stepsz);
         break;
       case 'a':
-        turnx-=1;
+        if(stepsx==0){
+          Serial.println("min x");
+          break;
+        }
         Serial.println("anti-clockwise");
         stepper_x.step(-stepsPerRevolution);
-        delay(1000);
-        Serial.println(turnx);
+        delay(100);
+        stepsx-=stepsPerRevolution;
+        Serial.println(stepsx);
         break;
       case 'b':
-        turny-=1;
+        if(stepsy==0){
+          Serial.println("min y");
+          break;
+        }
         Serial.println("anti-clockwise");
         stepper_y.step(-stepsPerRevolution);
-        delay(1000);
-        Serial.println(turny);
+        delay(100);
+        stepsy-=stepsPerRevolution;
+        Serial.println(stepsy);
         break;
       case 'c':
-        turnz-=1;
+        if(stepsz==0){
+          Serial.println("min z");
+          break;
+        }
         Serial.println("anti-clockwise");
         stepper_z.step(-stepsPerRevolution);
-        delay(1000);
-        Serial.println(turnz);
+        delay(100);
+        stepsz-=stepsPerRevolution;
+        Serial.println(stepsz);
         break;
       
     }
-    
-
-  /*// step one revolution in the other direction:
-  Serial.println("counterclockwise");
-  stepper_z.step(-stepsPerRevolution);
-  delay(500);
-  */
   }
 }
