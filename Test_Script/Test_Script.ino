@@ -20,7 +20,8 @@ void setup() {
   Serial.begin(115200);
   stepper_a.setSpeed(40); //slips at 60
   stepper_b.setSpeed(40);
-  stepper_c.setSpeed(40);
+  stepper_c.setSpeed(40); //stepper c rotates opposite to the others
+  
   pinMode(END_Z, INPUT);
 }
 
@@ -40,9 +41,12 @@ void loop() {
           break;
         }
         Serial.println("down");
-        stepper_a.step(stepsPerRevolution);
+        /*stepper_a.step(-stepsPerRevolution);
         delay(100);
-        stepsa += stepsPerRevolution;
+        stepsa -= stepsPerRevolution;*/
+        stepper_a.step(-100);
+        delay(100);
+        stepsa -= 100;
         Serial.println(stepsa);
         break;
       case 'y':
@@ -51,14 +55,16 @@ void loop() {
           break;
         }
         Serial.println("down");
-        stepper_b.step(stepsPerRevolution);
+        /*stepper_b.step(stepsPerRevolution);
         delay(100);
-        stepsb += stepsPerRevolution;
+        stepsb += stepsPerRevolution;*/
+        stepper_b.step(100);
+        delay(100);
+        stepsb += 100;
         Serial.println(stepsb);
         break;
       case 'z':
-        if (stepsc == 500) {
-          //if(stepsc==7680){
+        if(stepsc==7680){
           Serial.println("max c");
           break;
         }
@@ -70,37 +76,40 @@ void loop() {
         Serial.println(stepsc);
         break;
       case 'a':
-        if (stepsa == 0) {
+        /*if (stepsa == 0) {
           Serial.println("min a");
           break;
-        }
+        }*/
         Serial.println("up");
-        stepper_a.step(-stepsPerRevolution);
+        stepper_a.step(100);
         delay(100);
-        stepsa -= stepsPerRevolution;
+        stepsa += 100;
         Serial.println(stepsa);
         break;
       case 'b':
-        if (stepsb == 0) {
+        /*if (stepsb == 0) {
           Serial.println("min b");
           break;
-        }
+        }*/
         Serial.println("up");
-        stepper_b.step(-stepsPerRevolution);
+        /*stepper_b.step(-stepsPerRevolution);
         delay(100);
-        stepsb -= stepsPerRevolution;
+        stepsb -= stepsPerRevolution;*/
+        stepper_b.step(-100);
+        delay(100);
+        stepsb -= 100;
         Serial.println(stepsb);
         break;
       case 'c':
         Serial.println(analogRead(END_Z));
-        if (stepsc==0) {
+        /*if (stepsc==0) {
           Serial.println("min c");
           initialZConf == true;
           stepsc = 0;
           break;
-        }
+        }*/
         Serial.println("up");
-        stepper_c.step(100);
+        stepper_c.step(200);
         //stepper_c.step(-stepsPerRevolution);
         delay(100);
         stepsc -= 100;
@@ -118,6 +127,6 @@ void loop() {
           }
           stepper_c.step(10);
         }
-    }
+    }//end of switch statement
   }
 }
