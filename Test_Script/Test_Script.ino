@@ -8,12 +8,14 @@ const int stepsPerRevolution = 512;  // change this to fit the number of steps p
 //Circumference=2*pi*r=59.37mm
 //mm per step = 59.37mm/512=0.1159mm/step
 //1metre/7680 steps = 0.1302mm/step
-//A7 is z analog reader
+//A7 is C analog reader
 Stepper stepper_a(stepsPerRevolution, 2, 3, 4, 5);
 Stepper stepper_b(stepsPerRevolution, 8, 9, 10, 11);
 Stepper stepper_c(stepsPerRevolution, 6, 7, 12, 13);
 
-#define END_Z A7
+#define END_A A5
+#define END_B A6
+#define END_C A7
 
 void setup() {
   // put your setup code here, to run once:
@@ -21,14 +23,43 @@ void setup() {
   stepper_a.setSpeed(40); //slips at 60
   stepper_b.setSpeed(40);
   stepper_c.setSpeed(40); //stepper c rotates opposite to the others
-  
-  pinMode(END_Z, INPUT);
+
+  pinMode(END_A, INPUT);
+  pinMode(END_B, INPUT);
+  pinMode(END_C, INPUT);
 }
 
 int stepsa = 0;
 int stepsb = 0;
 int stepsc = 0;
-bool initialZConf = false;
+bool initialAConf = false;
+bool initialBConf = false;
+bool initialCConf = false;
+
+
+int endRead(char x) {
+  int output = 5;
+  switch (x) {
+    case 'a':
+      for (int i = 0; i < 20; i++) {
+        output += analogRead(END_A);
+        delay(5);
+      }
+      output = (output / 20); //low is under 100
+      break;
+    case 'b':
+      for (int i = 0; i < 20; i++) {
+        output += analogRead(END_B);
+        delay(5);
+      }
+      output = (output / 20); //low is under 550
+      break;
+    case 'c':
+      output = analogRead(END_C); //low is under 100
+      break;
+  }
+  return output;
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -42,11 +73,11 @@ void loop() {
         }
         Serial.println("down");
         /*stepper_a.step(-stepsPerRevolution);
+          delay(100);
+          stepsa -= stepsPerRevolution;*/
+        stepper_a.step(100);
         delay(100);
-        stepsa -= stepsPerRevolution;*/
-        stepper_a.step(-100);
-        delay(100);
-        stepsa -= 100;
+        stepsa += 100;
         Serial.println(stepsa);
         break;
       case 'y':
@@ -56,15 +87,15 @@ void loop() {
         }
         Serial.println("down");
         /*stepper_b.step(stepsPerRevolution);
-        delay(100);
-        stepsb += stepsPerRevolution;*/
+          delay(100);
+          stepsb += stepsPerRevolution;*/
         stepper_b.step(100);
         delay(100);
         stepsb += 100;
         Serial.println(stepsb);
         break;
       case 'z':
-        if(stepsc==7680){
+        if (stepsc == 7680) {
           Serial.println("max c");
           break;
         }
@@ -76,38 +107,35 @@ void loop() {
         Serial.println(stepsc);
         break;
       case 'a':
-        /*if (stepsa == 0) {
+        if (stepsa == 0) {
           Serial.println("min a");
           break;
-        }*/
+        }
         Serial.println("up");
-        stepper_a.step(100);
+        stepper_a.step(-100);
         delay(100);
-        stepsa += 100;
+        stepsa -= 100;
         Serial.println(stepsa);
         break;
       case 'b':
-        /*if (stepsb == 0) {
+        if (stepsb == 0) {
           Serial.println("min b");
           break;
-        }*/
+        }
         Serial.println("up");
         /*stepper_b.step(-stepsPerRevolution);
-        delay(100);
-        stepsb -= stepsPerRevolution;*/
+          delay(100);
+          stepsb -= stepsPerRevolution;*/
         stepper_b.step(-100);
         delay(100);
         stepsb -= 100;
         Serial.println(stepsb);
         break;
       case 'c':
-        Serial.println(analogRead(END_Z));
-        /*if (stepsc==0) {
+        if (stepsc == 0) {
           Serial.println("min c");
-          initialZConf == true;
-          stepsc = 0;
           break;
-        }*/
+        }
         Serial.println("up");
         stepper_c.step(200);
         //stepper_c.step(-stepsPerRevolution);
@@ -116,17 +144,41 @@ void loop() {
         Serial.println(stepsc);
         break;
       case 'q':
-        while (initialZConf == false) {
+        delay(50);
+        while (initialAConf == false) {
           Serial.print("Light Sensor: ");
-          Serial.println(analogRead(END_Z));
-          if (analogRead(END_Z) < 100 ) {
-            Serial.println("min c");
-            initialZConf == true;
+          int aRead = endRead('a');
+          Serial.println(aRead);
+          if (aRead < 100 ) {
+            Serial.println("min a");
+            initialAConf = true;
             stepsc = 0;
-            break;
+          }
+          stepper_a.step(-10);
+        }
+        while (initialBConf == false) {
+          Serial.print("Light Sensor: ");
+          int bRead = endRead('b');
+          Serial.println(bRead);
+          if (bRead < 550 ) {
+            Serial.println("min b");
+            initialBConf = true;
+            stepsc = 0;
+          }
+          stepper_b.step(-10);
+        }
+        while (initialCConf == false) {
+          Serial.print("Light Sensor: ");
+          int cRead = endRead('c');
+          Serial.println(cRead);
+          if (cRead < 100 ) {
+            Serial.println("min c");
+            initialCConf = true;
+            stepsc = 0;
           }
           stepper_c.step(10);
         }
     }//end of switch statement
   }
 }
+
