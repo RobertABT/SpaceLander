@@ -63,15 +63,15 @@ int endRead(char x) {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (Serial.available() > 0) {
-    int input = Serial.read();
+  if (Serial.available()) {
+    char input = Serial.read();
     switch (input) {
       case 'x':
         if (stepsa == 7680) {
           Serial.println("max a");
           break;
         }
-        Serial.println("down");
+        //Serial.println("down");
         /*stepper_a.step(-stepsPerRevolution);
           delay(100);
           stepsa -= stepsPerRevolution;*/
@@ -85,7 +85,7 @@ void loop() {
           Serial.println("max b");
           break;
         }
-        Serial.println("down");
+        //Serial.println("down");
         /*stepper_b.step(stepsPerRevolution);
           delay(100);
           stepsb += stepsPerRevolution;*/
@@ -99,7 +99,7 @@ void loop() {
           Serial.println("max c");
           break;
         }
-        Serial.println("down");
+        //Serial.println("down");
         stepper_c.step(-100);
         //stepper_c.step(stepsPerRevolution);
         delay(100);
@@ -111,7 +111,7 @@ void loop() {
           Serial.println("min a");
           break;
         }
-        Serial.println("up");
+        //Serial.println("up");
         stepper_a.step(-100);
         delay(100);
         stepsa -= 100;
@@ -122,7 +122,7 @@ void loop() {
           Serial.println("min b");
           break;
         }
-        Serial.println("up");
+        //Serial.println("up");
         /*stepper_b.step(-stepsPerRevolution);
           delay(100);
           stepsb -= stepsPerRevolution;*/
@@ -136,8 +136,8 @@ void loop() {
           Serial.println("min c");
           break;
         }
-        Serial.println("up");
-        stepper_c.step(200);
+        //Serial.println("up");
+        stepper_c.step(100);
         //stepper_c.step(-stepsPerRevolution);
         delay(100);
         stepsc -= 100;
@@ -149,7 +149,7 @@ void loop() {
           Serial.print("Light Sensor: ");
           int aRead = endRead('a');
           Serial.println(aRead);
-          if (aRead < 100 ) {
+          if (aRead < 150 ) {
             Serial.println("min a");
             initialAConf = true;
             stepsc = 0;
