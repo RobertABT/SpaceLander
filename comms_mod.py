@@ -10,12 +10,21 @@ while initializing:
 		initializing = False
 		print 'Ready'
 while True:
-	#ser.flush
-	#sleep(0.1)
+	ser.flush
+	sleep(0.1)
 	c = raw_input('What way do you want to move?')
 	ser.write(c[0]) # send it to the Arduino
-	sleep(.4)
-	while ser.in_waiting > 0:
-		bytesToRead = ser.in_waiting
-		print bytesToRead
-		print ser.readline() # Read the newest output from the Arduino
+	sleep(.1)
+	i=0
+	print ser.in_waiting
+	while i <= ser.in_waiting:
+		c=ser.read(1)
+		if c=='*':
+			print ser.read(2)
+			print 'EOT'
+			break
+		print c
+		i = i + 1
+		#bytesToRead = ser.in_waiting
+		#print bytesToRead
+		#print ser.readline() # Read the newest output from the Arduino

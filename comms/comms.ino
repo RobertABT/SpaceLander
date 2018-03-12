@@ -17,10 +17,10 @@ void loop() {
   if (Serial.available()) { // only send data back if data has been sent
     char inByte = Serial.read(); // read the incoming data
     if(inByte=='x'){
-      stepper_a.step(50);
+      stepper_a.step(10);
     }
-    Serial.print("This is a test: ");
-    Serial.println("355"); // send the data back in a new line so that it is not all one long line
+    //Serial.print("This is a test: ");
+    Serial.println("355*"); // send the data back in a new line so that it is not all one long line
   }
   delay(100); // delay for 1/10 of a second
 }

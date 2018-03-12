@@ -27,6 +27,7 @@ void setup() {
   pinMode(END_A, INPUT);
   pinMode(END_B, INPUT);
   pinMode(END_C, INPUT);
+  Serial.println("Ready"); // print "Ready" once
 }
 
 int stepsa = 0;
@@ -133,7 +134,8 @@ void loop() {
         break;
       case 'c':
         if (stepsc == 0) {
-          Serial.println("min c");
+          Serial.print("min c");
+          Serial.println('x');
           break;
         }
         //Serial.println("up");
@@ -141,14 +143,15 @@ void loop() {
         //stepper_c.step(-stepsPerRevolution);
         delay(100);
         stepsc -= 100;
-        Serial.println(stepsc);
+        Serial.print(stepsc);
+        Serial.println('x');
         break;
       case 'q':
         delay(50);
         while (initialAConf == false) {
-          Serial.print("Light Sensor: ");
+          //Serial.print("Light Sensor: ");
           int aRead = endRead('a');
-          Serial.println(aRead);
+          //Serial.println(aRead);
           if (aRead < 150 ) {
             Serial.println("min a");
             initialAConf = true;
@@ -157,9 +160,9 @@ void loop() {
           stepper_a.step(-10);
         }
         while (initialBConf == false) {
-          Serial.print("Light Sensor: ");
+          //Serial.print("Light Sensor: ");
           int bRead = endRead('b');
-          Serial.println(bRead);
+          //Serial.println(bRead);
           if (bRead < 550 ) {
             Serial.println("min b");
             initialBConf = true;
@@ -168,9 +171,9 @@ void loop() {
           stepper_b.step(-10);
         }
         while (initialCConf == false) {
-          Serial.print("Light Sensor: ");
+          //Serial.print("Light Sensor: ");
           int cRead = endRead('c');
-          Serial.println(cRead);
+          //Serial.println(cRead);
           if (cRead < 100 ) {
             Serial.println("min c");
             initialCConf = true;
@@ -178,7 +181,9 @@ void loop() {
           }
           stepper_c.step(10);
         }
+        Serial.println('*');
     }//end of switch statement
+    //delay(100);
   }
 }
 
