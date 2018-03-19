@@ -2,6 +2,8 @@
 //angle 5.625
 //32:1 gearbox
 const int stepsPerRevolution = 512;  // change this to fit the number of steps per revolution
+const int movement = 256;
+const int gravityVal = 5;
 // for your motor
 //drum radius =14mm (given)
 //drum circumference = 18.9mm=radius of 9.45mm (measured)
@@ -72,27 +74,16 @@ void loop() {
           Serial.println("max a");
           break;
         }
-        //Serial.println("down");
-        /*stepper_a.step(-stepsPerRevolution);
-          delay(100);
-          stepsa -= stepsPerRevolution;*/
-        stepper_a.step(100);
-        delay(100);
-        stepsa += 100;
-        Serial.println(stepsa);
+        stepper_a.step(movement);
+        stepsa += movement;
         break;
       case 'y':
         if (stepsb == 7680) {
           Serial.println("max b");
           break;
         }
-        //Serial.println("down");
-        /*stepper_b.step(stepsPerRevolution);
-          delay(100);
-          stepsb += stepsPerRevolution;*/
-        stepper_b.step(100);
-        delay(100);
-        stepsb += 100;
+        stepper_b.step(movement);
+        stepsb += movement;
         Serial.println(stepsb);
         break;
       case 'z':
@@ -100,11 +91,8 @@ void loop() {
           Serial.println("max c");
           break;
         }
-        //Serial.println("down");
-        stepper_c.step(-100);
-        //stepper_c.step(stepsPerRevolution);
-        delay(100);
-        stepsc += 100;
+        stepper_c.step(-movement);
+        stepsc += movement;
         Serial.println(stepsc);
         break;
       case 'a':
@@ -112,10 +100,8 @@ void loop() {
           Serial.println("min a");
           break;
         }
-        //Serial.println("up");
-        stepper_a.step(-100);
-        delay(100);
-        stepsa -= 100;
+        stepper_a.step(-movement);
+        stepsa -= movement;
         Serial.println(stepsa);
         break;
       case 'b':
@@ -123,33 +109,59 @@ void loop() {
           Serial.println("min b");
           break;
         }
-        //Serial.println("up");
-        /*stepper_b.step(-stepsPerRevolution);
-          delay(100);
-          stepsb -= stepsPerRevolution;*/
-        stepper_b.step(-100);
-        delay(100);
-        stepsb -= 100;
+        stepper_b.step(-movement);
+        stepsb -= movement;
         Serial.println(stepsb);
         break;
       case 'c':
         if (stepsc == 0) {
           Serial.print("min c");
-          Serial.println('x');
           break;
         }
-        //Serial.println("up");
-        stepper_c.step(100);
-        //stepper_c.step(-stepsPerRevolution);
-        delay(100);
-        stepsc -= 100;
+        stepper_c.step(movement);
+        stepsc -= movement;
         Serial.print(stepsc);
         Serial.println('x');
         break;
+      case 'u':      
+        Serial.print("X :");
+        Serial.println(stepsa);
+        Serial.print("Y :");
+        Serial.println(stepsb);
+        Serial.print("Z :");
+        Serial.println(stepsc);
+        if (stepsa <= 0 || stepsb <= 0 || stepsc <= 0) {
+          Serial.print("at the top");
+          Serial.println('*');
+          break;
+        }
+        stepper_a.step(-movement);
+        stepper_b.step(-movement);
+        stepper_c.step(movement);
+        delay(100);
+        stepsa -= movement;
+        stepsb -= movement;
+        stepsc -= movement;
+        break;
+      case 'd':
+        if (stepsa == 7680 || stepsb == 7680 || stepsc == 7680) {
+          Serial.print("at the bottom");
+          Serial.println('*');
+          break;
+        }
+        stepper_a.step(movement);
+        stepper_b.step(movement);
+        stepper_c.step(-movement);
+        delay(100);
+        stepsa += movement;
+        stepsb += movement;
+        stepsc += movement;
+        break;
       case 'q':
-        delay(50);
+        initialAConf == false;
+        initialBConf == false;
+        initialCConf == false;
         while (initialAConf == false) {
-          //Serial.print("Light Sensor: ");
           int aRead = endRead('a');
           //Serial.println(aRead);
           if (aRead < 150 ) {
@@ -163,7 +175,7 @@ void loop() {
           //Serial.print("Light Sensor: ");
           int bRead = endRead('b');
           //Serial.println(bRead);
-          if (bRead < 550 ) {
+          if (bRead < 550 ) {//a lot of bounce on this sensor
             Serial.println("min b");
             initialBConf = true;
             stepsc = 0;
@@ -183,7 +195,16 @@ void loop() {
         }
         Serial.println('*');
     }//end of switch statement
-    //delay(100);
   }
+  gravity();
 }
 
+void gravity(){
+        stepper_a.step(gravityVal);
+        stepper_b.step(gravityVal);
+        stepper_c.step(-gravityVal);
+        stepsa += (gravityVal);
+        stepsb += (gravityVal);
+        stepsc += (gravityVal);
+        delay(10);
+}
