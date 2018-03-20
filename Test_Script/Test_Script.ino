@@ -3,7 +3,7 @@
 //32:1 gearbox
 const int stepsPerRevolution = 512;  // change this to fit the number of steps per revolution
 const int movement = 256;
-const int gravityVal = 5;
+const int gravityVal = 4;
 // for your motor
 //drum radius =14mm (given)
 //drum circumference = 18.9mm=radius of 9.45mm (measured)
@@ -84,7 +84,6 @@ void loop() {
         }
         stepper_b.step(movement);
         stepsb += movement;
-        Serial.println(stepsb);
         break;
       case 'z':
         if (stepsc == 7680) {
@@ -93,7 +92,6 @@ void loop() {
         }
         stepper_c.step(-movement);
         stepsc += movement;
-        Serial.println(stepsc);
         break;
       case 'a':
         if (stepsa == 0) {
@@ -102,7 +100,6 @@ void loop() {
         }
         stepper_a.step(-movement);
         stepsa -= movement;
-        Serial.println(stepsa);
         break;
       case 'b':
         if (stepsb == 0) {
@@ -111,7 +108,6 @@ void loop() {
         }
         stepper_b.step(-movement);
         stepsb -= movement;
-        Serial.println(stepsb);
         break;
       case 'c':
         if (stepsc == 0) {
@@ -120,25 +116,15 @@ void loop() {
         }
         stepper_c.step(movement);
         stepsc -= movement;
-        Serial.print(stepsc);
-        Serial.println('x');
         break;
-      case 'u':      
-        Serial.print("X :");
-        Serial.println(stepsa);
-        Serial.print("Y :");
-        Serial.println(stepsb);
-        Serial.print("Z :");
-        Serial.println(stepsc);
+      case 'u':
         if (stepsa <= 0 || stepsb <= 0 || stepsc <= 0) {
           Serial.print("at the top");
-          Serial.println('*');
           break;
         }
         stepper_a.step(-movement);
         stepper_b.step(-movement);
         stepper_c.step(movement);
-        delay(100);
         stepsa -= movement;
         stepsb -= movement;
         stepsc -= movement;
@@ -146,7 +132,6 @@ void loop() {
       case 'd':
         if (stepsa == 7680 || stepsb == 7680 || stepsc == 7680) {
           Serial.print("at the bottom");
-          Serial.println('*');
           break;
         }
         stepper_a.step(movement);
@@ -193,8 +178,11 @@ void loop() {
           }
           stepper_c.step(10);
         }
-        Serial.println('*');
     }//end of switch statement
+  Serial.println(stepsa);
+  Serial.println(stepsb);
+  Serial.println(stepsc);
+  Serial.println('*');
   }
   gravity();
 }
@@ -206,5 +194,5 @@ void gravity(){
         stepsa += (gravityVal);
         stepsb += (gravityVal);
         stepsc += (gravityVal);
-        delay(10);
+        delay(100);
 }

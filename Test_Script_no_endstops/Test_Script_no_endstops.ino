@@ -74,99 +74,51 @@ void loop() {
         }
         //Serial.println("down");
         stepper_a.step(stepsPerRevolution);
-          delay(100);
-          stepsa += stepsPerRevolution;/*
-        stepper_a.step(100);
-        delay(100);
-        stepsa += 100;
-        Serial.println(stepsa);*/
+        stepsa += stepsPerRevolution;
         break;
       case 'y':
         if (stepsb == 7680) {
           Serial.println("max b");
           break;
         }
-        //Serial.println("down");
         stepper_b.step(stepsPerRevolution);
-          delay(100);
-          stepsb += stepsPerRevolution;
-        //stepper_b.step(100);
-        //delay(100);
-        //stepsb += 100;
-        Serial.println(stepsb);
+        stepsb += stepsPerRevolution;
         break;
       case 'z':
         if (stepsc == 7680) {
           Serial.println("max c");
           break;
         }
-        //Serial.println("down");
-        //stepper_c.step(-100);
         stepper_c.step(-stepsPerRevolution);
-        delay(100);
         stepsc = stepsPerRevolution;
-        Serial.println(stepsc);
         break;
       case 'a':
-        /*if (stepsa == 0) {
-          Serial.println("min a");
-          break;
-        }*/
-        //Serial.println("up");
-        stepper_a.step(-stepsPerRevolution);
-        delay(100);
-        stepsa -= stepsPerRevolution;
-        Serial.println(stepsa);
+        stepper_a.step(-100);
+        stepsa -= 100;
         break;
       case 'b':
-        /*if (stepsb == 0) {
-          Serial.println("min b");
-          break;
-        }*/
-        //Serial.println("up");
-        stepper_b.step(-stepsPerRevolution);
-          delay(100);
-          stepsb -= stepsPerRevolution;
-        //stepper_b.step(-100);
-        delay(100);
-        stepsb -= stepsPerRevolution;
-        Serial.println(stepsb);
+        stepper_b.step(-100);
+        stepsb -= 100;
         break;
       case 'c':
-        /*if (stepsc == 0) {
-          Serial.print("min c");
-          Serial.println('x');
-          break;          
-        }*/
-        //Serial.println("up");
-        //stepper_c.step(100);
-        stepper_c.step(stepsPerRevolution);
-        delay(100);
-        stepsc -= stepsPerRevolution;
-        Serial.print(stepsc);
-        Serial.println('x');
+        stepper_c.step(100);
+        stepsc -= 100;
         break;
       case 'u':
-        /*if (stepsa == 0 || stepsb == 0 || stepsc == 0) {
-          Serial.print("at the top");
-          Serial.println('*');
-          break;          
-        }*/
-        //Serial.println("up");
-        //stepper_c.step(100);
-        stepper_a.step(-(stepsPerRevolution/2));
-        stepper_b.step(-(stepsPerRevolution/2));
-        stepper_c.step((stepsPerRevolution/2));
+        stepper_a.step(-(stepsPerRevolution / 2));
+        stepper_b.step(-(stepsPerRevolution / 2));
+        stepper_c.step((stepsPerRevolution / 2));
         delay(100);
+
+        stepsa -= stepsPerRevolution;
+        stepsb -= stepsPerRevolution;
         stepsc -= stepsPerRevolution;
         Serial.println('up');
         break;
       case 'q':
         delay(50);
         while (initialAConf == false) {
-          //Serial.print("Light Sensor: ");
           int aRead = endRead('a');
-          //Serial.println(aRead);
           if (aRead < 150 ) {
             Serial.println("min a");
             initialAConf = true;
@@ -175,9 +127,7 @@ void loop() {
           stepper_a.step(-10);
         }
         while (initialBConf == false) {
-          //Serial.print("Light Sensor: ");
           int bRead = endRead('b');
-          //Serial.println(bRead);
           if (bRead < 550 ) {
             Serial.println("min b");
             initialBConf = true;
@@ -186,9 +136,7 @@ void loop() {
           stepper_b.step(-10);
         }
         while (initialCConf == false) {
-          //Serial.print("Light Sensor: ");
           int cRead = endRead('c');
-          //Serial.println(cRead);
           if (cRead < 100 ) {
             Serial.println("min c");
             initialCConf = true;
@@ -196,9 +144,13 @@ void loop() {
           }
           stepper_c.step(10);
         }
-        Serial.println('*');
     }//end of switch statement
     //delay(100);
+    Serial.println(stepsa);
+    Serial.println(stepsb);
+    Serial.println(stepsc);
+    Serial.println('*');
+
   }
 }
 
