@@ -90,7 +90,7 @@ void loop() {
           break;
         }
         stepper_c.step(-stepsPerRevolution);
-        stepsc = stepsPerRevolution;
+        stepsc += stepsPerRevolution;
         break;
       case 'a':
         stepper_a.step(-100);
@@ -110,10 +110,9 @@ void loop() {
         stepper_c.step((stepsPerRevolution / 2));
         delay(100);
 
-        stepsa -= stepsPerRevolution;
-        stepsb -= stepsPerRevolution;
-        stepsc -= stepsPerRevolution;
-        Serial.println('up');
+        stepsa -= stepsPerRevolution/2;
+        stepsb -= stepsPerRevolution/2;
+        stepsc -= stepsPerRevolution/2;
         break;
       case 'q':
         delay(50);
@@ -146,9 +145,12 @@ void loop() {
         }
     }//end of switch statement
     //delay(100);
-    Serial.println(stepsa);
-    Serial.println(stepsb);
-    Serial.println(stepsc);
+    Serial.print(stepsa);
+    Serial.println(",");
+    Serial.print(stepsb);
+    Serial.println(",");
+    Serial.print(stepsc);
+    Serial.println(",");
     Serial.println('*');
 
   }
