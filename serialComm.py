@@ -7,6 +7,7 @@ ser = serial.Serial('/dev/ttyUSB0', 115200) # Establish the connection on a spec
 pointA = [130,225,0] #these values will likely have to change
 pointB = [0,0,0]
 pointC = [260,0,0]
+initial_guess = (50,50,10)
 #lengthA = 0.1
 #lengthB = 0.1
 #lengthC = 0.1
@@ -41,18 +42,8 @@ def equations(guess):
 		( landerX - pointB[0] )**2 + ( landerY - pointB[1] )**2 + (landerZ - pointB[2])**2 -(lengthB*0.1159)**2,
 		( landerX - pointC[0] )**2 + ( landerY - pointC[1] )**2 + (landerZ - pointC[2])**2 -(lengthC*0.1159)**2,
 	)
-
-####################################################################################################
-
-while initializing:
-	if ser.readline() == 'Ready\r\n':
-		initializing = False
-		print 'Ready'
-while True:
-	ser.flush
-	sleep(0.01)
-	sentChar = raw_input('What way do you want to move?')
-	ser.write(sentChar[0]) # send it to the Arduino
+def sendChar(c):
+	ser.write(c[0]) # send it to the Arduino
 	ser.flushOutput()
 	i=1
 	output = ""
@@ -66,9 +57,33 @@ while True:
 			break
 	print output
 	lengthCalc(output)
+	
+def reset():
+	while lengthA >=12:
+		sendChar('a')
+	while lengthB >=12:
+		sendChar('b')
+	while lengthC >=12:
+		sendChar('c')
+
+####################################################################################################
+
+while initializing:
+	if ser.readline() == 'Ready\r\n':
+		initializing = False
+		print 'Ready'
+while True:
+	#print("guess is: ", initial_guess)
+	ser.flush
+	sleep(0.01)
+	inputChar = raw_input('What way do you want to move?')
+	if inputChar=="exit":
+		reset()
+	else:
+		sendChar(inputChar[0])
 	print ("lengths A,B,C are ", lengthA, lengthB, lengthC)
-	initial_guess = ( 30, 30, 25)
 	result = fsolve( equations, initial_guess )
 	print("(x,y,z)=", result)
-
-
+	print fsolve( equations, initial_guess, full_output=1)
+	#initial_guess=result
+	
