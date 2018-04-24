@@ -179,10 +179,13 @@ void loop() {
           stepper_c.step(10);
         }
     }//end of switch statement
-  Serial.println(stepsa);
-  Serial.println(stepsb);
-  Serial.println(stepsc);
-  Serial.println('*');
+    Serial.print(stepsa);
+    Serial.println(",");
+    Serial.print(stepsb);
+    Serial.println(",");
+    Serial.print(stepsc);
+    Serial.println(",");
+    Serial.println('*');
   }
   gravity();
 }

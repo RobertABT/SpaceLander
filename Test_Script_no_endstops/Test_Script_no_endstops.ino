@@ -143,6 +143,12 @@ void loop() {
           }
           stepper_c.step(10);
         }
+        break;
+      case 'r':
+        stepper_a.step(-stepsa);
+        stepper_b.step(-stepsb);
+        stepper_c.step(stepsc);
+        break;
     }//end of switch statement
     //delay(100);
     Serial.print(stepsa);
