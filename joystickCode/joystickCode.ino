@@ -92,12 +92,16 @@ int endRead(char x) { //returns IR sensor value
 }
 
 void loop() {
-    joyRead
+    joyRead();
     Serial.print(stepsa);
     Serial.println(",");
     Serial.print(stepsb);
     Serial.println(",");
     Serial.print(stepsc);
+    Serial.println(",");
+    Serial.print(diff[0]);
+    Serial.println(",");
+    Serial.print(diff[1]);
     Serial.println(",");
     Serial.println('*');
   }
