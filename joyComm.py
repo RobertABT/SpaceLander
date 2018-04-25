@@ -14,7 +14,7 @@ initLengthC = 162.0
 initializing = True
 coord = []
 
-def lengthCalc(output):
+def valCalc(output):
 	a,b = output.split("*")#removes the */r/n end characters
 	i=0
 	for line in a.split(","):
@@ -30,11 +30,19 @@ def lengthCalc(output):
 			global lengthC
 			lengthC = initLengthC + (float(line)*0.1159)
 			#print lengthC
-		if i>=3:
+		if i==3:
+			global joyX
+			joyX = float(line)
+			#print lengthB
+		if i==4:
+			global joyY
+			joyY = float(line)
+			#print lengthC
+		if i>=5:
 			break
 		i+=1
 	print ("lengths A,B,C are ", lengthA, lengthB, lengthC)
-	
+	print ("joy X,Y are: ", joyX, joyY)
 
 
 def lenCoords(guess):
@@ -49,15 +57,12 @@ def lenCoords(guess):
 def coordsLen(guess):
 	lenA, lenB, lenC = guess
 	return (
-		( coord[0] - pointA[0] )**2 + ( coord[1] - pointA[1] )**2 + (coord[2] - pointA[2])**2 -(lenA)**2,
-		( coord[0] - pointB[0] )**2 + ( coord[1] - pointB[1] )**2 + (coord[2] - pointB[2])**2 -(lenB)**2,
-		( coord[0] - pointC[0] )**2 + ( coord[1] - pointC[1] )**2 + (coord[2] - pointC[2])**2 -(lenC)**2,
+		( coord_w[0] - pointA[0] )**2 + ( coord_w[1] - pointA[1] )**2 + (coord[2] - pointA[2])**2 -(lenA)**2,
+		( coord_w[0] - pointB[0] )**2 + ( coord_w[1] - pointB[1] )**2 + (coord[2] - pointB[2])**2 -(lenB)**2,
+		( coord_w[0] - pointC[0] )**2 + ( coord_w[1] - pointC[1] )**2 + (coord[2] - pointC[2])**2 -(lenC)**2,
 	)
 		
-def sendChar(c):
-	ser.write(c[0]) # send it to the Arduino
-	ser.flushOutput()
-	i=1
+def readVal():
 	output = ""
 	while ser.in_waiting == 0:
 		sleep(0.1)
@@ -67,8 +72,22 @@ def sendChar(c):
 		if c=="*":
 			print 'EOT'
 			break
-	print output
-	lengthCalc(output)
+	valCalc(output)
+
+def addCoord():
+	global coord_w = []
+	coord_w[0] = coord[0] + joyX
+	coord_w[1] = coord[1] + joyY
+	
+def processLen(lengths)
+	global x, y, z = lengths
+	
+	x -= 178.0
+	x = x/0.1159
+	y -= 171.0
+	y = y/0.1159
+	z -= 162.0
+	z = z/0.1159
 	
 def reset():
 	while lengthA >=189.58 and lengthB >=182.58 and lengthC >=173.58:
@@ -83,24 +102,23 @@ while initializing:
 		initializing = False
 		print 'Ready'
 while True:
-	#print("guess is: ", initial_guess)
-	ser.flush
-	sleep(0.01)
-	inputChar = raw_input('What way do you want to move?')
-	if inputChar=="exit":
-		reset()
-		result = fsolve( lenCoords, initial_guess )
-		print result
-		sys.exit()
-	else:
-		sendChar(inputChar[0])
-	#print ("lengths A,B,C are ", lengthA, lengthB, lengthC)
+	readVal() #reads all values, and stores them
 	result = fsolve( lenCoords, initial_guess )
 	print("(x,y,z)=", result)
 	coord = result
-	coord_wanted = (lengthA,lengthB,lengthC)
-	derivedLen = fsolve(coordsLen, coord_wanted)
-	print derivedLen
-	#print fsolve( equations, initial_guess) #add ,full_output=1 if you need to debug equations
-	#initial_guess=result
+	addCoord()
+	strlen_guess = (lengthA,lengthB,lengthC)
+	derivedLen = fsolve(coordsLen, strlen_guess)
+	print ("guessed length is", derivedLen)
+	processLen(derivedLen) #turn string length into steps
+	Serial.print(x,y,z)
+	
+	#inputChar = raw_input('What way do you want to move?')
+	#if inputChar=="exit":
+	#	reset()
+	#	result = fsolve( lenCoords, initial_guess )
+	#	print result
+	#	sys.exit()
+	#else:
+	#	sendChar(inputChar[0])
 	

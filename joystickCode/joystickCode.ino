@@ -50,21 +50,25 @@ bool initialCConf = false;
 
 int joyX = 500; //resting is 520
 int joyY = 500; //resting is 507
-int result[2]={500,500}; //global as arrays cant be function results
-int lastRead[2]={500,500};
-int diff[2]={0,0}
+int result[2] = {500, 500}; //global as arrays cant be function results
+int lastRead[2] = {500, 500};
+int diff[2] = {0, 0};
 
-void joyRead(){
-  for(int i=0;i<10;i++){
+int motorAsteps = 0;
+int motorBsteps = 0;
+int motorCsteps = 0;
+
+void joyRead() {
+  for (int i = 0; i < 10; i++) {
     joyX += analogRead(JOY_X);
     joyY += analogRead(JOY_Y);
   }
-  result[0] = joyX/10;
-  result[1] = joyY/10;
-  diff[0] = result[0] - lastRead[0]
-  diff[1] = result[0] - lastRead[0]
-  lastRead[0] = result[0]
-  lastRead[0] = result[1]
+  result[0] = joyX / 10;
+  result[1] = joyY / 10;
+  diff[0] = result[0] - lastRead[0];
+  diff[1] = result[0] - lastRead[0];
+  lastRead[0] = result[0];
+  lastRead[0] = result[1];
 }
 
 int endRead(char x) { //returns IR sensor value
@@ -90,30 +94,82 @@ int endRead(char x) { //returns IR sensor value
   }
   return output;
 }
-
-void loop() {
-    joyRead();
-    Serial.print(stepsa);
-    Serial.println(",");
-    Serial.print(stepsb);
-    Serial.println(",");
-    Serial.print(stepsc);
-    Serial.println(",");
-    Serial.print(diff[0]);
-    Serial.println(",");
-    Serial.print(diff[1]);
-    Serial.println(",");
-    Serial.println('*');
+void splitInput(String s) {
+  Serial.println(s);
+  //motorAsteps = 0;
+  String temp = "";
+  int j = 0;
+  for (int i = 0; i < s.length(); i++) {
+    if (s.charAt(i) != ' ' && s.charAt(i) != ']' && s.charAt(i) != '[' && s.charAt(i) != ','&& s.charAt(i) != '(' && s.charAt(i) != ')') { //[ 237.3408  171.      162.    ] is the input style
+      temp += s.charAt(i);
+    }
+    if (s.charAt(i) == ' ' || s.charAt(i) == ',' && temp.length() != 0) {
+      if (j == 0) {
+        Serial.print("j0 ");
+        Serial.println(temp);
+        motorAsteps = temp.toDouble();
+        Serial.print("tempA");
+        Serial.println(motorAsteps);
+        temp = "";
+      }
+      if (j == 1) {
+        motorBsteps = temp.toDouble();
+        Serial.print("tempB");
+        Serial.println(motorBsteps);
+        temp = "";
+      }
+      if (j == 2) {
+        motorCsteps = temp.toDouble();
+        Serial.print("tempC");
+        Serial.println(motorCsteps);
+        temp = "";
+      }
+      j++;
+    }
   }
-  gravity();
+}
+void loop() {
+  joyRead();
+  Serial.print(stepsa);
+  Serial.println(",");
+  Serial.print(stepsb);
+  Serial.println(",");
+  Serial.print(stepsc);
+  Serial.println(",");
+  Serial.print(diff[0]);
+  Serial.println(",");
+  Serial.print(diff[1]);
+  Serial.println(",");
+  Serial.println('*');
+  while (!Serial.available()) {
+    delay(10);
+  }
+  String input = "";
+  while (Serial.available() > 0) {
+    char inChar = Serial.read();
+    input += inChar;
+  }
+  //Serial.println(input);
+  splitInput(input);
+  Serial.print("motorA ");
+  Serial.print(motorAsteps);
+  Serial.println(",");
+  Serial.print(motorBsteps);
+  Serial.println(",");
+  Serial.print(motorCsteps);
+  delay(100);
+
+//gravity();
 }
 
-void gravity(){
-        stepper_a.step(gravityVal);
-        stepper_b.step(gravityVal);
-        stepper_c.step(-gravityVal);
-        stepsa += (gravityVal);
-        stepsb += (gravityVal);
-        stepsc += (gravityVal);
-        delay(100);
+
+
+void gravity() {
+  stepper_a.step(gravityVal);
+  stepper_b.step(gravityVal);
+  stepper_c.step(-gravityVal);
+  stepsa += (gravityVal);
+  stepsb += (gravityVal);
+  stepsc += (gravityVal);
+  delay(100);
 }
