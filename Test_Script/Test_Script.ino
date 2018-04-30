@@ -15,6 +15,7 @@ Stepper stepper_a(stepsPerRevolution, 2, 3, 4, 5);
 Stepper stepper_b(stepsPerRevolution, 8, 9, 10, 11);
 Stepper stepper_c(stepsPerRevolution, 6, 7, 12, 13);
 
+//these pins are used by the IR sensors
 #define END_A A5
 #define END_B A6
 #define END_C A7
@@ -25,13 +26,15 @@ void setup() {
   stepper_a.setSpeed(40); //slips at 60
   stepper_b.setSpeed(40);
   stepper_c.setSpeed(40); //stepper c rotates opposite to the others
-
+  
+  //set IR sensors as inputs
   pinMode(END_A, INPUT);
   pinMode(END_B, INPUT);
   pinMode(END_C, INPUT);
   Serial.println("Ready"); // print "Ready" once
 }
-
+//initialises with current point as "top" point
+//if you need to move above this use the no_endstops.ino 
 int stepsa = 0;
 int stepsb = 0;
 int stepsc = 0;
