@@ -1,10 +1,10 @@
 #include <Stepper.h>
 //angle 5.625
 //32:1 gearbox
-const int stepsPerRevolution = 512;  // change this to fit the number of steps per revolution
+const int stepsPerRevolution = 512;  // change this to fit the number of steps per revolution for your motor
 const int movement = 256;
 const int gravityVal = 4;
-// for your motor
+const int stringMax = 4096
 //drum radius =14mm (given)
 //drum circumference = 18.9mm=radius of 9.45mm (measured)
 //Circumference=2*pi*r=59.37mm
@@ -40,10 +40,10 @@ bool initialBConf = false;
 bool initialCConf = false;
 
 
-int endRead(char x) {
+int endRead(char x) { //IR read for steppers A B and C, attempting to sense white tipex on black string
   int output = 5;
   switch (x) {
-    case 'a':
+    case 'a': //due to inconsistencies on some of the sensors, reading and averaging the value is required
       for (int i = 0; i < 20; i++) {
         output += analogRead(END_A);
         delay(5);
@@ -67,18 +67,18 @@ int endRead(char x) {
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available()) {
-    char input = Serial.read();
+    char input = Serial.read(); //use character from serial as switch for movement
     switch (input) {
       case 'x':
-        if (stepsa == 7680) {
+        if (stepsa == stringMax) { //limits amount that steppers can move out, adjust for your display height
           Serial.println("max a");
           break;
         }
-        stepper_a.step(movement);
-        stepsa += movement;
+        stepper_a.step(movement); //move half a turn 
+        stepsa += movement; //add half a turn to the step counter
         break;
       case 'y':
-        if (stepsb == 7680) {
+        if (stepsb == stringMax) {
           Serial.println("max b");
           break;
         }
@@ -86,15 +86,15 @@ void loop() {
         stepsb += movement;
         break;
       case 'z':
-        if (stepsc == 7680) {
+        if (stepsc == stringMax) {
           Serial.println("max c");
           break;
         }
-        stepper_c.step(-movement);
+        stepper_c.step(-movement); //motor c turn in the opposite direction to the others
         stepsc += movement;
         break;
       case 'a':
-        if (stepsa == 0) {
+        if (stepsa == 0) {//this software endstop prevents the string 
           Serial.println("min a");
           break;
         }
@@ -130,7 +130,7 @@ void loop() {
         stepsc -= movement;
         break;
       case 'd':
-        if (stepsa == 7680 || stepsb == 7680 || stepsc == 7680) {
+        if (stepsa == stringMax || stepsb == stringMax || stepsc == stringMax) {
           Serial.print("at the bottom");
           break;
         }
@@ -142,7 +142,10 @@ void loop() {
         stepsb += movement;
         stepsc += movement;
         break;
-      case 'q':
+      case 'q': 
+        //configuration case, which requires the IR sensors to be properly calibrated
+        //if the IR sensors arent tripping reliably as white string goes past 
+        //this method *should not* be run as it will over-tighten the system
         initialAConf == false;
         initialBConf == false;
         initialCConf == false;
@@ -179,6 +182,7 @@ void loop() {
           stepper_c.step(10);
         }
     }//end of switch statement
+    //send step data in a format that the python program can read in
     Serial.print(stepsa);
     Serial.println(",");
     Serial.print(stepsb);
@@ -190,7 +194,7 @@ void loop() {
   gravity();
 }
 
-void gravity(){
+void gravity(){// calling this function moves all of the strings down a little bit
         stepper_a.step(gravityVal);
         stepper_b.step(gravityVal);
         stepper_c.step(-gravityVal);
