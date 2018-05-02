@@ -1,10 +1,11 @@
 # SpaceLander
-Dissertation Project
+
+This is my Dissertation Project, and will likely have some follow up development after marking, if any clarification is required please contact rbterrey@gmail.com
 
 # Dependencies
 
-This project is built to run under python 2.7 and requires the following package(s):
-  -scipy
+This project is built to run under python 2.7 and requires the following package(s) :
+  - scipy
 
 This/These can be installed by running the following (this may be different based on your OS) :
   - apt install python2.7 python-pip
