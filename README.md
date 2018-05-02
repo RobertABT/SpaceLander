@@ -2,6 +2,7 @@
 Dissertation Project
 
 Dependencies
+
 This project is built to run under python 2.7 and requires the following package(s):
   -scipy
 
@@ -10,6 +11,7 @@ This/These can be installed by running the following (this may be different base
   - pip install scipy
 
 Ports
+
 You will also need to be able to upload to an arduino, and detect what port it is on. In the python code in this project this port is hardcoded as "/dev/ttyUSB0", but this may well need to be edited for your setup. "ls /dev/ | grep tty" should return the possible ports under linux.
 
 Hardware
