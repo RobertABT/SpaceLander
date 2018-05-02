@@ -15,7 +15,7 @@ initializing = True
 coord = []
 
 def lengthCalc(output):
-	a,b = output.split("*")#removes the */r/n end characters
+	a,b = output.split("*")#removes the /r/n end characters
 	i=0
 	for line in a.split(","):
 		if i==0:
