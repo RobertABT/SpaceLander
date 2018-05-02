@@ -21,23 +21,18 @@ def lengthCalc(output):
 		if i==0:
 			global lengthA
 			lengthA = initLengthA + (float(line)*0.1159)
-			#print lengthA
 		if i==1:
 			global lengthB
 			lengthB = initLengthB + (float(line)*0.1159)
-			#print lengthB
 		if i==2:
 			global lengthC
 			lengthC = initLengthC + (float(line)*0.1159)
-			#print lengthC
 		if i==3:
 			global joyX
 			joyX = float(line)
-			#print lengthB
 		if i==4:
 			global joyY
 			joyY = float(line)
-			#print lengthC
 		if i>=5:
 			break
 			
@@ -93,7 +88,6 @@ while initializing:
 		initializing = False
 		print 'Ready'
 while True:
-	#print("guess is: ", initial_guess)
 	ser.flush
 	sleep(0.01)
 	inputChar = raw_input('What way do you want to move?')
@@ -104,13 +98,9 @@ while True:
 		sys.exit()
 	else:
 		sendChar(inputChar[0])
-	#print ("lengths A,B,C are ", lengthA, lengthB, lengthC)
 	result = fsolve( lenCoords, initial_guess )
 	print("(x,y,z)=", result)
 	coord = result
 	coord_wanted = (lengthA,lengthB,lengthC)
 	derivedLen = fsolve(coordsLen, coord_wanted)
 	print derivedLen
-	#print fsolve( equations, initial_guess) #add ,full_output=1 if you need to debug equations
-	#initial_guess=result
-	
