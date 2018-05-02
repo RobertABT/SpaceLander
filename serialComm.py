@@ -30,8 +30,17 @@ def lengthCalc(output):
 			global lengthC
 			lengthC = initLengthC + (float(line)*0.1159)
 			#print lengthC
-		if i>=3:
+		if i==3:
+			global joyX
+			joyX = float(line)
+			#print lengthB
+		if i==4:
+			global joyY
+			joyY = float(line)
+			#print lengthC
+		if i>=5:
 			break
+			
 		i+=1
 	print ("lengths A,B,C are ", lengthA, lengthB, lengthC)
 	
