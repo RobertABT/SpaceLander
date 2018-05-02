@@ -43,7 +43,8 @@ def lengthCalc(output):
 			
 		i+=1
 	print ("lengths A,B,C are ", lengthA, lengthB, lengthC)
-	
+	print ("joy X,Y are: ", joyX, joyY)
+
 
 
 def lenCoords(guess):
