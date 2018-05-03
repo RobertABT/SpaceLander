@@ -148,6 +148,10 @@ void loop() {
         stepper_a.step(-stepsa);
         stepper_b.step(-stepsb);
         stepper_c.step(stepsc);
+        
+        stepsa -= stepsa;
+        stepsb -= stepsb;
+        stepsc -= stepsc;
         break;
     }//end of switch statement
     //delay(100);
