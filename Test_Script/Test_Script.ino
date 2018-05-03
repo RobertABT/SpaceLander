@@ -184,6 +184,16 @@ void loop() {
           }
           stepper_c.step(10);
         }
+        break;
+      case 'r': //indentation may need to be checked
+        stepper_a.step(-stepsa);
+        stepper_b.step(-stepsb);
+        stepper_c.step(stepsc);
+        
+        stepsa -= stepsa;
+        stepsb -= stepsb;
+        stepsc -= stepsc;
+        break;
     }//end of switch statement
     //send step data in a format that the python program can read in
     Serial.print(stepsa);
