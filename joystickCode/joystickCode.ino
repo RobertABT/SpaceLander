@@ -66,7 +66,7 @@ void joyRead() {
   result[0] = joyX / 10;
   result[1] = joyY / 10;
   diff[0] = result[0] - lastRead[0];
-  diff[1] = result[0] - lastRead[0];
+  diff[1] = result[1] - lastRead[1];
   lastRead[0] = result[0];
   lastRead[0] = result[1];
 }
